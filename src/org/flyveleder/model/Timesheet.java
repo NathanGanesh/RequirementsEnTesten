@@ -28,8 +28,8 @@ public class Timesheet {
      */
     public void addItem(TimesheetItem item) throws FlyvelederModelException {
         boolean doubleEntry = false;
+        assert !timeSheet.containsValue(item) : "item already exist";
         HashMap<String, TimesheetItem> timesheetItemHashMap = getTimeSheetForUser(item.getTrafficController().getId());
-
         for (TimesheetItem value : timesheetItemHashMap.values()) {
             //if there is another value for an already existing item it means double planned
             if (value.getStart().isBefore(item.getEnd()) && value.getEnd().isAfter(item.getStart())) {
@@ -49,8 +49,6 @@ public class Timesheet {
     }
 
     public void removeItem(String itemid) throws FlyvelederModelException {
-        assert itemid != null : "Null naam";
-        assert !itemid.isEmpty() : "Null naam";
         assert timeSheet.containsKey(itemid) : "Key doesnt exist";
         timeSheet.remove(itemid);
     }
