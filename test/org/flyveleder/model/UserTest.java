@@ -23,13 +23,13 @@ class UserTest {
 
     @BeforeAll
     public void startUp() throws FlyvelederModelException {
-        boss = new User("bossman",User.MANAGER,null,null);
+        boss = new User("bossman", User.MANAGER, null, null);
 
-        customer = new User("customer",User.CUSTOMER,null,null);
-        planner = new User("planner",User.PLANNER,boss,null);
+        customer = new User("customer", User.CUSTOMER, null, null);
+        planner = new User("planner", User.PLANNER, boss, null);
         timesheet = new Timesheet();
-        project = new Project("Test",customer,timesheet);
-        timesheetItem = new TimesheetItem(boss,project, LocalTime.of(11, 30), LocalTime.of(13, 30),LocalDate.now() );
+        project = new Project("Test", customer, timesheet);
+        timesheetItem = new TimesheetItem(boss, project, LocalTime.of(11, 30), LocalTime.of(13, 30), LocalDate.now());
     }
 
     /**
@@ -41,28 +41,28 @@ class UserTest {
         /** testing the constructor (String,String,User)   **/
         timesheet.addItem(timesheetItem);
 
-        User user = new User("a name",User.TRAFFICCONTROLLER,boss,timesheet);
-        assertNotNull(user,"User should not be null");
-        assertEquals(user.getTypeOfUser(),User.TRAFFICCONTROLLER);
-        assertEquals(user.getName(),"a name");
-        assertSame(user.getBoss(),boss);
-        assertEquals(user.getId(),"4"); // second user created... id should be 2
+        User user = new User("a name", User.TRAFFICCONTROLLER, boss, timesheet);
+        assertNotNull(user, "User should not be null");
+        assertEquals(user.getTypeOfUser(), User.TRAFFICCONTROLLER);
+        assertEquals(user.getName(), "a name");
+        assertSame(user.getBoss(), boss);
+        assertEquals(user.getId(), "4"); // second user created... id should be 2
 
         /* Testing getters and setters to get 100% code coverage */
 
-        assertEquals(customer.getTypeOfUser(),User.CUSTOMER);
-        assertEquals(boss.getTypeOfUser(),User.MANAGER);
-        assertEquals(planner.getTypeOfUser(),User.PLANNER);
+        assertEquals(customer.getTypeOfUser(), User.CUSTOMER);
+        assertEquals(boss.getTypeOfUser(), User.MANAGER);
+        assertEquals(planner.getTypeOfUser(), User.PLANNER);
 
 
-        assertEquals(customer.getUserType(),"customer");
-        assertEquals(boss.getUserType(),"manager");
-        assertEquals(planner.getUserType(),"planner");
+        assertEquals(customer.getUserType(), "customer");
+        assertEquals(boss.getUserType(), "manager");
+        assertEquals(planner.getUserType(), "planner");
 
 
-        TimesheetItem item = new TimesheetItem(user,project, LocalTime.of(12,0),LocalTime.of(14,0),LocalDate.now());
+        TimesheetItem item = new TimesheetItem(user, project, LocalTime.of(12, 0), LocalTime.of(14, 0), LocalDate.now());
 
-        assertEquals(user.getWorkList().size(),0);
+        assertEquals(user.getWorkList().size(), 0);
 
 
         assertFalse(user.isCustomer());
@@ -74,10 +74,10 @@ class UserTest {
         assertNotNull(user.getVacationDates());
         LocalDate today = LocalDate.now();
         user.getVacationDates().add(today);
-        assertSame(user.getVacationDates().get(0),today);
+        assertSame(user.getVacationDates().get(0), today);
 
         assertNotNull(boss.getEmployees());
-        assertEquals(boss.getEmployees().size(),2);
+        assertEquals(boss.getEmployees().size(), 2);
 
         //test password management
 
@@ -93,10 +93,10 @@ class UserTest {
         assertFalse(boss.isBHVer());
         assertFalse(customer.isBHVer());
         assertFalse(planner.isBHVer());
-        user.setBHVLicense("B01269545");
+        user.setBHVLicense("B012695458");
 
         assertTrue(user.isBHVer());
-        assertEquals(user.getBHVLicense(), "B01269545");
+        assertEquals(user.getBHVLicense(), "B012695458");
 
         user.setUserName("coronaController");
         assertEquals(user.getUserName(), "coronaController");
@@ -115,16 +115,46 @@ class UserTest {
     @Test
     public void testBadUser() {
         //Creating a user with an unknown role should fail
-        assertThrows(AssertionError.class,() -> {
-            User user = new User("a name",12,boss,timesheet);
-        },"Creating a user with an unknown role should fail");
-        //todo: Creating a trafficcontroller without a boss should fail, create the test!
+        assertThrows(AssertionError.class, () -> {
+            User user = new User("a name", 12, boss, timesheet);
+        }, "Creating a user with an unknown role should fail");
 
-        //todo: Creating a trafficcontroller without a timesheet should fail
 
-        //todo: Creating a trafficcontroller without a name should fail
+        assertThrows(AssertionError.class, () -> {
+            User user = new User("a name", 4, null, timesheet);
+        }, "Creating a trafficcontroller without a boss should fail");
 
-        //todo: Creating a trafficcontroller with a null name should fail
+
+        assertThrows(AssertionError.class, () -> {
+            User user = new User("a name", 4, boss, null);
+        }, "Creating a trafficcontroller without timesheet should fail");
+
+
+        assertThrows(AssertionError.class, () -> {
+            User user = new User("", 4, boss, timesheet);
+        }, "Creating a trafficcontroller without a name should fail");
+
+        assertThrows(AssertionError.class, () -> {
+            User user = new User(null, 4, boss, timesheet);
+        }, "Creating a trafficcontroller with a null name should fail");
+
+
+        assertThrows(AssertionError.class, () -> {
+            Timesheet timesheet2 = new Timesheet();
+            User user = new User("TrafficController", User.TRAFFICCONTROLLER, boss, timesheet2);
+        }, "Creating a trafficcontroller with a empty timesheet should fail");
+
+        assertThrows(AssertionError.class, () -> {
+            User user = new User("TrafficController", User.TRAFFICCONTROLLER, boss, timesheet);
+            user.setBHVLicense("A124587963");
+        }, "first letter needs to B");
+
+
+        assertThrows(AssertionError.class, () -> {
+            User user = new User("TrafficController", User.TRAFFICCONTROLLER, boss, timesheet);
+            user.setBHVLicense("B12458796663");
+        }, "length longer then 10");
+
 
     }
 

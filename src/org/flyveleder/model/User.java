@@ -67,7 +67,7 @@ public class User implements Serializable {
             this.timeSheet = timeSheet;
             assert !timeSheet.getItems().isEmpty(): "time sheet is empty for trafficController";
         }
-
+        assert !name.isEmpty(): "name is empty";
         this.name = name;
         changePassword("testing");
         this.typeOfUser = typeOfUser;
@@ -154,6 +154,7 @@ public class User implements Serializable {
      * @throws FlyvelederModelException
      */
     public ArrayList < Project > getProjects() throws FlyvelederModelException {
+        // TODO: 26-6-2020 test case
         ArrayList < Project > projects = new ArrayList < > ();
         HashMap <String,TimesheetItem> timesheet = timeSheet.getTimeSheetForUser(id);
         ArrayList<TimesheetItem> items = new ArrayList(timesheet.values());
@@ -172,6 +173,7 @@ public class User implements Serializable {
      * @throws FlyvelederModelException
      */
     public ArrayList <TimesheetItem> getWorkList() throws FlyvelederModelException {
+        // TODO: 26-6-2020 testcase
         HashMap <String,TimesheetItem> timesheet = timeSheet.getTimeSheetForUser(id);
         ArrayList<TimesheetItem> items = new ArrayList(timesheet.values());
         return items;
@@ -221,11 +223,12 @@ public class User implements Serializable {
         hint: you ccould use a regular expression to check this, see the String.Matches function
      */
     public void setBHVLicense(String BHVLicense) {
-        String pattern = "^([B][0-9]+)$";
+        String pattern = "^[B][0-9]{9}";
         assert BHVLicense != null: "Null naam";
         assert !BHVLicense.isEmpty(): "Null naam";
         assert isTrafficControler() : "not trafficController";
         assert BHVLicense.matches(pattern): "First letter b and then 9 digits";
+        assert !(BHVLicense.length()>10) : "Length is bigger then 10";
         this.BHVLicense = BHVLicense;
     }
 
