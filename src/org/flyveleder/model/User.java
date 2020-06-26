@@ -53,14 +53,21 @@ public class User implements Serializable {
         assert name != null : "Name cannot be null";
         employees = new ArrayList < > ();
         vacationDates = new ArrayList < > ();
+//        assert Integer.valueOf(id) <= 0 : "id is negative";
         this.id = Integer.valueOf(++maxId).toString();
         this.boss = boss;
+        assert (1 <= typeOfUser && typeOfUser <=4) : "user is not in specified range of 1 and 4";
         if (boss != null) {
+//            assert !getEmployees().isEmpty(): "employees are empty";
             boss.getEmployees().add(this);
         }
         if (typeOfUser == TRAFFICCONTROLLER ) {
+            assert boss != null : "trafficcontroller must need an manager";
+            assert timeSheet!=null: "no time sheet";
             this.timeSheet = timeSheet;
+            assert !timeSheet.getItems().isEmpty(): "time sheet is empty for trafficController";
         }
+
         this.name = name;
         changePassword("testing");
         this.typeOfUser = typeOfUser;
@@ -172,6 +179,7 @@ public class User implements Serializable {
 
 
     public ArrayList<User> getEmployees() {
+        assert isManager(): "no manager cant ask for employees";
         return employees;
     }
 
@@ -195,10 +203,14 @@ public class User implements Serializable {
 
 
     public void setName(String name) {
+        assert name != null: "Null naam";
+        assert !name.isEmpty(): "Null naam";
         this.name = name;
     }
 
     public void setUserName(String userName) {
+        assert userName != null: "Null naam";
+        assert !userName.isEmpty(): "Null naam";
         this.userName = userName;
     }
 
@@ -209,11 +221,16 @@ public class User implements Serializable {
         hint: you ccould use a regular expression to check this, see the String.Matches function
      */
     public void setBHVLicense(String BHVLicense) {
+        String pattern = "^([B][0-9]+)$";
+        assert BHVLicense != null: "Null naam";
+        assert !BHVLicense.isEmpty(): "Null naam";
+        assert isTrafficControler() : "not trafficController";
+        assert BHVLicense.matches(pattern): "First letter b and then 9 digits";
         this.BHVLicense = BHVLicense;
     }
 
     public boolean isBHVer() {
-        return BHVLicense == null;
+        return BHVLicense != null;
     }
 
     //todo : This is dangerous. Refactor the code so that the defensive programming guidlines are adhered to

@@ -18,16 +18,18 @@ class UserTest {
     private Project project;
     private User customer;
     private User planner;
+    private TimesheetItem timesheetItem;
 
 
     @BeforeAll
-    public void startUp() {
+    public void startUp() throws FlyvelederModelException {
         boss = new User("bossman",User.MANAGER,null,null);
+
         customer = new User("customer",User.CUSTOMER,null,null);
         planner = new User("planner",User.PLANNER,boss,null);
         timesheet = new Timesheet();
         project = new Project("Test",customer,timesheet);
-
+        timesheetItem = new TimesheetItem(boss,project, LocalTime.of(11, 30), LocalTime.of(13, 30),LocalDate.now() );
     }
 
     /**
@@ -37,7 +39,7 @@ class UserTest {
     @Test
     public void testUser() throws FlyvelederModelException {
         /** testing the constructor (String,String,User)   **/
-
+        timesheet.addItem(timesheetItem);
 
         User user = new User("a name",User.TRAFFICCONTROLLER,boss,timesheet);
         assertNotNull(user,"User should not be null");
@@ -83,6 +85,26 @@ class UserTest {
         assertTrue(user.login("hello"));
         assertFalse(user.login("helloworld"));
 
+        assertEquals(user.toString(), "trafficcontroller, userid 4, name a name");
+
+//        assertEquals(user.getPassword(), "$2a$10$JiWDEI9Y0ZrNbcyPwHEUleIdOB5kuhyeK74hJ6krENIxdvk7x5Biy");
+        assertNotEquals(user.getPassword(), "hello");
+        assertFalse(user.isBHVer());
+        assertFalse(boss.isBHVer());
+        assertFalse(customer.isBHVer());
+        assertFalse(planner.isBHVer());
+        user.setBHVLicense("B01269545");
+
+        assertTrue(user.isBHVer());
+        assertEquals(user.getBHVLicense(), "B01269545");
+
+        user.setUserName("coronaController");
+        assertEquals(user.getUserName(), "coronaController");
+
+        user.setName("hans kazan");
+        assertEquals(user.getName(), "hans kazan");
+
+        assertEquals(user.getProjects().size(), 0);
 
     }
 
