@@ -92,8 +92,6 @@ public class Timesheet {
      */
     public HashMap<String, TimesheetItem> getTimeSheetForProject(String projectid) throws FlyvelederModelException {
         // TODO: 26-6-2020 assert used id --> so it assert to the hashmap
-        assert projectid != null : "Null naam";
-        assert !projectid.isEmpty() : "Null naam";
         return (HashMap<String, TimesheetItem>) timeSheet.entrySet().stream()
                 .filter(u -> u.getValue().getProject().getId().equals(projectid))
                 .collect(Collectors.toMap(u -> u.getKey(), u -> u.getValue()));
