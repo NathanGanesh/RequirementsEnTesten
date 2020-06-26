@@ -30,11 +30,14 @@ class TimesheetTest {
     public void startUp() throws FlyvelederModelException {
         boss_manger = new User("bossman", User.MANAGER, null, null);
         timesheet = new Timesheet();
-        timesheetItem1 = new TimesheetItem(boss_manger, project, LocalTime.of(11, 0), LocalTime.of(17, 0), LocalDate.now());
-        timesheet.addItem(timesheetItem1);
+
+
         customer = new User("customer", User.CUSTOMER, boss_manger, null);
         project = new Project("Test", customer, timesheet);
+        timesheetItem1 = new TimesheetItem(boss_manger, project, LocalTime.of(11, 0), LocalTime.of(17, 0), LocalDate.now());
+        timesheet.addItem(timesheetItem1);
         trafficController = new User("trafficcontroller", User.TRAFFICCONTROLLER, boss_manger, timesheet);
+
         timesheetItem2 = new TimesheetItem(trafficController, project, LocalTime.of(14, 0), LocalTime.of(13, 0), LocalDate.now());
         timesheetItem3 = new TimesheetItem(trafficController, project, LocalTime.of(11, 30), LocalTime.of(17, 30), LocalDate.now());
     }
@@ -45,7 +48,7 @@ class TimesheetTest {
         assertEquals(timesheet.getItems().size(), 1);
 
 
-        assertEquals(timesheet.getTimeSheetItem("3"), timesheetItem1);
+        assertEquals(timesheet.getTimeSheetItem("1"), timesheetItem1);
         //timesheet item
         timesheet.removeItem(timesheetItem1);
         assertEquals(timesheet.getItems().size(), 0);
@@ -57,10 +60,9 @@ class TimesheetTest {
         assertEquals(timesheet.getItems().size(), 0);
 
         timesheet.addItem(timesheetItem1);
-        Project project = new Project("corona", boss_manger, timesheet);
         assertEquals(timesheet.getTimeSheetForProject("1").size(), 1);
 
-        assertEquals(timesheet.getTimeSheetForProject("1").get("3"), timesheetItem1);
+        assertEquals(timesheet.getTimeSheetForProject("1").get("1"), timesheetItem1);
         timesheet.removeItem(timesheetItem1.getId());
         assertEquals(timesheet.getItems().size(), 0);
 //        assertEquals(timesheet.getTimeSheetForProject("1").get());
