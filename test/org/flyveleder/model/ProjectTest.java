@@ -52,8 +52,9 @@ class ProjectTest {
         assertEquals(project.getNotes(), "1.5m social distance!!!");
 
         assertEquals(project.getTimeSheet().size(), 1);
+        assertEquals(project.getTimeSheet().get(0), timesheetItem);
         //comment so i dotn have to wait 3days
-//        assertNotNull(project.sendMail());
+        assertNotNull(project.sendMail());
 
     }
 

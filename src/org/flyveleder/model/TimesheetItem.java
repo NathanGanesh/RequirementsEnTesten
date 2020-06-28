@@ -15,7 +15,7 @@ public class TimesheetItem {
     //Projects cannot change...
     private final Project project;
     private String id;
-    private User trafficController;
+    private TrafficController trafficController;
     private LocalTime start, end;
     private LocalDate date;
     private boolean validated;
@@ -26,12 +26,15 @@ public class TimesheetItem {
         When planning an item the date cannot be in the past!
      */
     public TimesheetItem(TrafficController trafficController, Project project, LocalTime start, LocalTime end, LocalDate date) throws FlyvelederModelException {
+        assert end != null: new FlyvelederModelException("end time is null");
+        assert start != null: new FlyvelederModelException("start time is null");
         if (date.isBefore(LocalDate.now())) {
             throw new FlyvelederModelException("You cannot plan items in the past");
         }
         assert trafficController != null: new FlyvelederModelException("trafficcontroller is null");
         this.trafficController = trafficController;
         assert !end.isBefore(start): new FlyvelederModelException("end is before start");
+
         this.start = start;
         this.end = end;
         this.date = date;
@@ -41,44 +44,39 @@ public class TimesheetItem {
     }
 
 
-    public User getTrafficController() {
+    public TrafficController getTrafficController() {
         return trafficController;
     }
-
-    public void setTrafficController(User trafficController) {
+    public void setTrafficController(TrafficController trafficController) {
         this.trafficController = trafficController;
     }
-
     public LocalTime getStart() {
         return start;
     }
-
     public void setStart(LocalTime start) {
+        assert !end.isBefore(start): new FlyvelederModelException("end is before start");
         this.start = start;
     }
-
     public LocalTime getEnd() {
         return end;
     }
-
     public void setEnd(LocalTime end) {
         this.end = end;
     }
-
     public LocalDate getDate() {
         return date;
     }
-
     /*
         When planning only dates in the future can be used
      */
     public void setDate(LocalDate date) throws  FlyvelederModelException{
+        assert date!=null: new FlyvelederModelException("date is null");
         if (date.isBefore(LocalDate.now())) {
             throw new FlyvelederModelException("You cannot plan items in the past");
         }
+
         this.date = date;
     }
-
     public boolean isValidated() {
         return validated;
     }

@@ -42,15 +42,13 @@ public class Project {
         assert timeSheet != null : "time is null";
         this.timeSheet = timeSheet;
     }
-
-
     /**
      * @return the total time spend on a project
      * @throws FlyvelederModelException
      */
     public long getTotalTime() throws FlyvelederModelException {
         Duration totaltime = Duration.ofHours(0);
-        assert id!=null:"id is null";
+        assert id != null : "id is null";
         HashMap<String, TimesheetItem> timesheet = timeSheet.getTimeSheetForProject(id);
         totaltime = timesheet.values().stream().map(unit ->
                 Duration.between(unit.getStart(), unit.getEnd())
@@ -78,7 +76,6 @@ public class Project {
     public String getNotes() {
         return Notes;
     }
-
 
     public void setAdress(String adress) {
         assert adress != null : "adress naam";
@@ -114,23 +111,18 @@ public class Project {
     }
 
     public ProjectMailer sendMail() {
-
         ProjectMailer mailer = new ProjectMailer(this);
-
         mailer.setTemplate(getMailTemplate());
-
         mailer.sendMail();
         //so we know who send the mail its possible to return a boolean from send mail
         return mailer;
-
     }
 
     /**
      * @return all the timesheet items belonging to this project.
      * @throws FlyvelederModelException
      */
-    public ArrayList<TimesheetItem> getTimeSheet() throws FlyvelederModelException {
+    public ArrayList getTimeSheet() throws FlyvelederModelException {
         return new ArrayList(timeSheet.getTimeSheetForProject(id).values());
     }
-
 }

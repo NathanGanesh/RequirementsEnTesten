@@ -87,7 +87,8 @@ public class TrafficController extends User {
         items.sort((w1, w2) -> w1.getDate().isBefore(w2.getDate()) ? -1 : 1);
         items.forEach(item -> {
             // TODO: 28-6-2020 write test case
-            if (!projects.contains(item.getProject())) projects.add(item.getProject());
+            if (!projects.contains(item.getProject()))
+                projects.add(item.getProject());
         });
         return projects;
     }
