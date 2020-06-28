@@ -30,6 +30,7 @@ public class Timesheet {
         boolean doubleEntry = false;
         assert !timeSheet.containsValue(item) : "item already exist";
         HashMap<String, TimesheetItem> timesheetItemHashMap = getTimeSheetForUser(item.getTrafficController().getId());
+
         for (TimesheetItem value : timesheetItemHashMap.values()) {
             //if there is another value for an already existing item it means double planned
             if (value.getStart().isBefore(item.getEnd()) && value.getEnd().isAfter(item.getStart())) {
@@ -63,11 +64,11 @@ public class Timesheet {
 
     /**
      * @return all items in the time sheet.
-     * todo: This method is not save...
+     *
      * Explain why this is the case and change it so is is save
      */
     public HashMap<String, TimesheetItem> getItems() {
-        return timeSheet;
+        return new HashMap<>(timeSheet);
     }
 
 

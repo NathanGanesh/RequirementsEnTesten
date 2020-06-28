@@ -13,12 +13,12 @@ import java.util.HashMap;
  * Created by abe23 on 08/11/17.
  */
 
-public class User implements Serializable {
-
-    public final static int             CUSTOMER = 1;
-    public final static int             PLANNER = 2;
-    public final static int             MANAGER = 3;
-    public final static int             TRAFFICCONTROLLER = 4;
+public abstract class User implements Serializable {
+//
+//    public final static int             CUSTOMER = 1;
+//    public final static int             PLANNER = 2;
+//    public final static int             MANAGER = 3;
+//    public final static int             TRAFFICCONTROLLER = 4;
 
     private static int                  maxId = 0;                  //static variable for the creation of ids
 
@@ -29,77 +29,92 @@ public class User implements Serializable {
     private String                      password;                   //Hashed password default = testing
 
     //Only for the manager
-    public ArrayList < User >           employees;
+//    public ArrayList < User >           employees;
 
     //Only for the controllers
-    private ArrayList < LocalDate >     vacationDates;              //The vacation dates of a controller
-    private Timesheet                   timeSheet;                  //reference to the Timesheet ledger
-    private User                        boss;
-    private String                      BHVLicense;
+//    private ArrayList < LocalDate >     vacationDates;              //The vacation dates of a controller
+//    private Timesheet                   timeSheet;                  //reference to the Timesheet ledger
+//    private User                        boss;
+//    private String                      BHVLicense;
 
 
-    /**
-     *
-     * @param name
-     * @param typeOfUser
-     * @param boss
-     * @param timeSheet The global timeSheet ledger. This ledger should shared by all traficcontrollers
-     *                  So every trafficcontroller has a reference to the same ledger!
-     *
-     * TODO: each User that is a traffic controller needs a boss
-     * this is the user who approves the hours of a traffic contoller
-     */
-    public User(String name, int typeOfUser, User boss, Timesheet timeSheet)   {
+//    /**
+//     *
+//     * @param name
+//     * @param typeOfUser
+//     * @param boss
+//     * @param timeSheet The global timeSheet ledger. This ledger should shared by all traficcontrollers
+//     *                  So every trafficcontroller has a reference to the same ledger!
+//     *
+//     * this is the user who approves the hours of a traffic contoller
+//     */
+//    public User(String name, int typeOfUser, User boss, Timesheet timeSheet)   {
+//        assert name != null : "Name cannot be null";
+//        employees = new ArrayList < > ();
+//        vacationDates = new ArrayList < > ();
+////        assert Integer.valueOf(id) <= 0 : "id is negative";
+//        this.id = Integer.valueOf(++maxId).toString();
+//        this.boss = boss;
+//        assert (1 <= typeOfUser && typeOfUser <=4) : "user is not in specified range of 1 and 4";
+//        if (boss != null) {
+////            assert !getEmployees().isEmpty(): "employees are empty";
+//            boss.getEmployees().add(this);
+//        }
+//        if (typeOfUser == TRAFFICCONTROLLER ) {
+//            assert boss != null : "trafficcontroller must need an manager";
+//            assert timeSheet!=null: "no time sheet";
+//            this.timeSheet = timeSheet;
+//            assert !timeSheet.getItems().isEmpty(): "time sheet is empty for trafficController";
+//        }
+//        assert !name.isEmpty(): "name is empty";
+//        this.name = name;
+//        changePassword("testing");
+//        this.typeOfUser = typeOfUser;
+//
+//        this.BHVLicense = null;
+//    }
+
+    public User(String name)   {
         assert name != null : "Name cannot be null";
-        employees = new ArrayList < > ();
-        vacationDates = new ArrayList < > ();
-//        assert Integer.valueOf(id) <= 0 : "id is negative";
         this.id = Integer.valueOf(++maxId).toString();
-        this.boss = boss;
-        assert (1 <= typeOfUser && typeOfUser <=4) : "user is not in specified range of 1 and 4";
-        if (boss != null) {
-//            assert !getEmployees().isEmpty(): "employees are empty";
-            boss.getEmployees().add(this);
-        }
-        if (typeOfUser == TRAFFICCONTROLLER ) {
-            assert boss != null : "trafficcontroller must need an manager";
-            assert timeSheet!=null: "no time sheet";
-            this.timeSheet = timeSheet;
-            assert !timeSheet.getItems().isEmpty(): "time sheet is empty for trafficController";
-        }
         assert !name.isEmpty(): "name is empty";
         this.name = name;
         changePassword("testing");
-        this.typeOfUser = typeOfUser;
-        this.BHVLicense = null;
+//        this.typeOfUser = typeOfUser;
+
     }
 
-    public int getTypeOfUser() {
-        return typeOfUser;
-    }
+//    /** cant be non usertype to ask this function
+//     * @return usertype
+//     */
+//    public int getTypeOfUser() {
+//        assert getUserType()!=null:"not a user so cant get usertype";
+//        return typeOfUser;
+//    }
 
 
-    /**
-     *
-     * @return String representation of the USER.
-     * This is needed for the interface
-     */
-    public String getUserType() {
-        switch (typeOfUser) {
-            case CUSTOMER:
-                return "customer";
-            case TRAFFICCONTROLLER:
-                return "trafficcontroller";
-            case PLANNER:
-                return "planner";
-            case MANAGER:
-                return "manager";
-            default:
-                assert false: "Unknown type of user!!";
-                break;
-        }
-        return "unknown";
-    }
+//    /**
+//     *
+//     * @return String representation of the USER.
+//     * This is needed for the interface
+////     */
+//    public String getUserType() {
+//
+//        switch (typeOfUser) {
+//            case CUSTOMER:
+//                return "customer";
+//            case TRAFFICCONTROLLER:
+//                return "trafficcontroller";
+//            case PLANNER:
+//                return "planner";
+//            case MANAGER:
+//                return "manager";
+//            default:
+//                assert false: "Unknown type of user!!";
+//                break;
+//        }
+//        return "unknown";
+//    }
 
 
     /**
@@ -108,6 +123,7 @@ public class User implements Serializable {
      * @return true of false
      */
     public boolean login(String password) {
+        assert !password.isEmpty(): "password cant be empty";
         return BCrypt.checkpw(password, this.password);
     }
 
@@ -116,6 +132,7 @@ public class User implements Serializable {
      * @param newPassword: password that will be hashed
      */
     public void changePassword(String newPassword) {
+        assert !newPassword.isEmpty(): "password cant be empty";
         this.password = BCrypt.hashpw(newPassword, BCrypt.gensalt());
     }
 
@@ -129,10 +146,10 @@ public class User implements Serializable {
     public String getId() {
         return id;
     }
-
-    public User getBoss() {
-        return boss;
-    }
+//
+//    public User getBoss() {
+//        return boss;
+//    }
 
 
     public String getPassword() {
@@ -144,62 +161,62 @@ public class User implements Serializable {
         return userName;
     }
 
-    public String getBHVLicense() {
-        return BHVLicense;
-    }
+//    public String getBHVLicense() {
+//        return BHVLicense;
+//    }
 
-    /**
-     *
-     * @return Projects the user has been planned in, in the future
-     * @throws FlyvelederModelException
-     */
-    public ArrayList < Project > getProjects() throws FlyvelederModelException {
-        // TODO: 26-6-2020 test case
-        ArrayList < Project > projects = new ArrayList < > ();
-        HashMap <String,TimesheetItem> timesheet = timeSheet.getTimeSheetForUser(id);
-        ArrayList<TimesheetItem> items = new ArrayList(timesheet.values());
-        //sort work on the date
-        items.sort((w1, w2) -> w1.getDate().isBefore(w2.getDate()) ? -1 : 1);
-        items.forEach(item -> {
-            if (!projects.contains(item.getProject())) projects.add(item.getProject());
-        });
-        return projects;
-    }
+//    /**
+//     *
+//     * @return Projects the user has been planned in, in the future
+//     * @throws FlyvelederModelException
+//     */
+//    public ArrayList < Project > getProjects() throws FlyvelederModelException {
+//        // TODO: 26-6-2020 test case
+//        ArrayList < Project > projects = new ArrayList < > ();
+//        HashMap <String,TimesheetItem> timesheet = timeSheet.getTimeSheetForUser(id);
+//        ArrayList<TimesheetItem> items = new ArrayList(timesheet.values());
+//        //sort work on the date
+//        items.sort((w1, w2) -> w1.getDate().isBefore(w2.getDate()) ? -1 : 1);
+//        items.forEach(item -> {
+//            if (!projects.contains(item.getProject())) projects.add(item.getProject());
+//        });
+//        return projects;
+//    }
 
-
-    /**
-     *
-     * @return A list of all timesheet items for the user.
-     * @throws FlyvelederModelException
-     */
-    public ArrayList <TimesheetItem> getWorkList() throws FlyvelederModelException {
-        // TODO: 26-6-2020 testcase
-        HashMap <String,TimesheetItem> timesheet = timeSheet.getTimeSheetForUser(id);
-        ArrayList<TimesheetItem> items = new ArrayList(timesheet.values());
-        return items;
-    }
-
-
-    public ArrayList<User> getEmployees() {
-        assert isManager(): "no manager cant ask for employees";
-        return employees;
-    }
-
-    public boolean isTrafficControler() {
-        return this.typeOfUser == TRAFFICCONTROLLER;
-    }
-
-    public boolean isPlanner() {
-        return this.typeOfUser == PLANNER;
-    }
-
-    public boolean isManager() {
-        return this.typeOfUser == MANAGER;
-    }
-
-    public boolean isCustomer() {
-        return this.typeOfUser == CUSTOMER;
-    }
+//
+//    /**
+//     *
+//     * @return A list of all timesheet items for the user.
+//     * @throws FlyvelederModelException
+//     */
+//    public ArrayList <TimesheetItem> getWorkList() throws FlyvelederModelException {
+//        // TODO: 26-6-2020 testcase
+//        HashMap <String,TimesheetItem> timesheet = timeSheet.getTimeSheetForUser(id);
+//        ArrayList<TimesheetItem> items = new ArrayList(timesheet.values());
+//        return items;
+//    }
+//
+//
+//    public ArrayList<User> getEmployees() {
+//        assert isManager(): "no manager cant ask for employees";
+//        return employees;
+//    }
+//
+//    public boolean isTrafficControler() {
+//        return this.typeOfUser == TRAFFICCONTROLLER;
+//    }
+//
+//    public boolean isPlanner() {
+//        return this.typeOfUser == PLANNER;
+//    }
+//
+//    public boolean isManager() {
+//        return this.typeOfUser == MANAGER;
+//    }
+//
+//    public boolean isCustomer() {
+//        return this.typeOfUser == CUSTOMER;
+//    }
 
     /** SETTERS **/
 
@@ -222,29 +239,29 @@ public class User implements Serializable {
         with the Letter B and consisting of 9 number.
         hint: you ccould use a regular expression to check this, see the String.Matches function
      */
-    public void setBHVLicense(String BHVLicense) {
-        String pattern = "^[B][0-9]{9}";
-        assert BHVLicense != null: "Null naam";
-        assert !BHVLicense.isEmpty(): "Null naam";
-        assert isTrafficControler() : "not trafficController";
-        assert BHVLicense.matches(pattern): "First letter b and then 9 digits";
-        assert !(BHVLicense.length()>10) : "Length is bigger then 10";
-        this.BHVLicense = BHVLicense;
-    }
+//    public void setBHVLicense(String BHVLicense) {
+//        String pattern = "^[B][0-9]{9}";
+//        assert BHVLicense != null: "Null naam";
+//        assert !BHVLicense.isEmpty(): "Null naam";
+//        assert isTrafficControler() : "not trafficController";
+//        assert BHVLicense.matches(pattern): "First letter b and then 9 digits";
+//        assert !(BHVLicense.length()>10) : "Length is bigger then 10";
+//        this.BHVLicense = BHVLicense;
+//    }
 
-    public boolean isBHVer() {
-        return BHVLicense != null;
-    }
-
-    //todo : This is dangerous. Refactor the code so that the defensive programming guidlines are adhered to
-    public ArrayList < LocalDate > getVacationDates() {
-        return vacationDates;
-    }
+//    public boolean isBHVer() {
+//        return BHVLicense != null;
+//    }
+//
+//
+//    public ArrayList < LocalDate > getVacationDates() {
+//        return new ArrayList<>(vacationDates);
+//    }
 
 
     @Override
     public String toString() {
-        return getUserType() + ", userid " + id + ", name " + name;
+        return "userid " + id + ", name " + name;
     }
 
 }

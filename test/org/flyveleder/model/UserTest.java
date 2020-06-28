@@ -13,23 +13,30 @@ import static org.junit.jupiter.api.Assertions.*;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class UserTest {
 
-    private User boss;
+    //    private User boss;
     private Timesheet timesheet;
     private Project project;
-    private User customer;
-    private User planner;
+    //    private User customer;
+//    private User planner;
     private TimesheetItem timesheetItem;
-
+    private Manager boss;
+    private Customer customer;
+    private Planner planner;
 
     @BeforeAll
     public void startUp() throws FlyvelederModelException {
-        boss = new User("bossman", User.MANAGER, null, null);
+//        boss = new User("bossman", User.MANAGER, null, null);
+//        customer = new User("customer", User.CUSTOMER, null, null);
+//        planner = new User("planner", User.PLANNER, boss, null);
 
-        customer = new User("customer", User.CUSTOMER, null, null);
-        planner = new User("planner", User.PLANNER, boss, null);
+        boss = new Manager("bossman");
+        customer = new Customer("customer");
+        planner = new Planner("planner");
         timesheet = new Timesheet();
-        project = new Project("Test", customer, timesheet);
         timesheetItem = new TimesheetItem(boss, project, LocalTime.of(11, 30), LocalTime.of(13, 30), LocalDate.now());
+        timesheet.addItem(timesheetItem);
+        project = new Project("Test", customer, timesheet);
+
     }
 
     /**
@@ -39,60 +46,77 @@ class UserTest {
     @Test
     public void testUser() throws FlyvelederModelException {
         /** testing the constructor (String,String,User)   **/
-        timesheet.addItem(timesheetItem);
 
-        User user = new User("a name", User.TRAFFICCONTROLLER, boss, timesheet);
+        assertEquals(timesheet.getItems().size(), 1);
+        TrafficController user = new TrafficController("a name", boss, timesheet);
         assertNotNull(user, "User should not be null");
-        assertEquals(user.getTypeOfUser(), User.TRAFFICCONTROLLER);
+        assertEquals(user.getName(), "a name");
+        assertSame(user.getBoss().getName(), "bossman");
+        assertEquals(user.getId(), "4");
+//        assertEquals(user.getTypeOfUser(), User.TRAFFICCONTROLLER);
         assertEquals(user.getName(), "a name");
         assertSame(user.getBoss(), boss);
         assertEquals(user.getId(), "4"); // second user created... id should be 2
 
         /* Testing getters and setters to get 100% code coverage */
+        assertTrue(customer instanceof Customer);
+        assertTrue(planner instanceof Planner);
+        assertTrue(boss instanceof Manager);
 
-        assertEquals(customer.getTypeOfUser(), User.CUSTOMER);
-        assertEquals(boss.getTypeOfUser(), User.MANAGER);
-        assertEquals(planner.getTypeOfUser(), User.PLANNER);
-
-
-        assertEquals(customer.getUserType(), "customer");
-        assertEquals(boss.getUserType(), "manager");
-        assertEquals(planner.getUserType(), "planner");
+//        assertEquals(customer.getTypeOfUser(), User.CUSTOMER);
+//        assertEquals(boss.getTypeOfUser(), User.MANAGER);
+//        assertEquals(planner.getTypeOfUser(), User.PLANNER);
+//
+//
+//        assertEquals(customer.getUserType(), "customer");
+//        assertEquals(boss.getUserType(), "manager");
+//        assertEquals(planner.getUserType(), "planner");
 
 
         TimesheetItem item = new TimesheetItem(user, project, LocalTime.of(12, 0), LocalTime.of(14, 0), LocalDate.now());
 
         assertEquals(user.getWorkList().size(), 0);
+//        assertFalse(user instanceof Customer);
+//        assertFalse(user instanceof Customer);
+//        assertFalse(user instanceof Customer);
 
-
-        assertFalse(user.isCustomer());
-        assertFalse(user.isManager());
-        assertFalse(user.isPlanner());
-        assertTrue(boss.isManager());
-        assertTrue(customer.isCustomer());
+//
+//        assertFalse(user.isCustomer());
+//        assertFalse(user.isManager());
+//        assertFalse(user.isPlanner());
+//        assertTrue(user.isTrafficControler());
+//        assertTrue(boss.isManager());
+//        assertTrue(customer.isCustomer());
 
         assertNotNull(user.getVacationDates());
         LocalDate today = LocalDate.now();
-        user.getVacationDates().add(today);
+        user.addVacationToUser(today);
         assertSame(user.getVacationDates().get(0), today);
+        assertEquals(user.getVacationDates().size(), 1);
+        user.removeVacationToUser(today);
+        assertEquals(user.getVacationDates().size(), 0);
 
         assertNotNull(boss.getEmployees());
-        assertEquals(boss.getEmployees().size(), 2);
+        System.out.println(boss.getEmployees());
+
+        assertEquals(boss.getEmployees().size(), 1);
+        boss.removeEmployeeToBoss(user);
+        assertEquals(boss.getEmployees().size(), 0);
+
 
         //test password management
 
         user.changePassword("hello");
         assertTrue(user.login("hello"));
         assertFalse(user.login("helloworld"));
-
-        assertEquals(user.toString(), "trafficcontroller, userid 4, name a name");
+        assertEquals(user.toString(), "userid 4, name a name");
 
 //        assertEquals(user.getPassword(), "$2a$10$JiWDEI9Y0ZrNbcyPwHEUleIdOB5kuhyeK74hJ6krENIxdvk7x5Biy");
         assertNotEquals(user.getPassword(), "hello");
         assertFalse(user.isBHVer());
-        assertFalse(boss.isBHVer());
-        assertFalse(customer.isBHVer());
-        assertFalse(planner.isBHVer());
+//        assertFalse(boss.isBHVer());
+//        assertFalse(customer.isBHVer());
+//        assertFalse(planner.isBHVer());
         user.setBHVLicense("B012695458");
 
         assertTrue(user.isBHVer());
@@ -115,45 +139,75 @@ class UserTest {
     @Test
     public void testBadUser() {
         //Creating a user with an unknown role should fail
+//        assertThrows(AssertionError.class, () -> {
+//            User user = new User("a name", 5, boss, timesheet);
+//        }, "Creating a user with an unknown role should fail");
+//
+//        assertThrows(AssertionError.class, () -> {
+//            User user = new User("a name", 0, boss, timesheet);
+//        }, "Creating a user with an unknown role should fail");
+//
+//        assertThrows(AssertionError.class, () -> {
+//            User user = new User("a name", 4, null, timesheet);
+//        }, "Creating a trafficcontroller without a boss should fail");
+//
+//
+//        assertThrows(AssertionError.class, () -> {
+//            User user = new User("a name", 4, boss, null);
+//        }, "Creating a trafficcontroller without timesheet should fail");
+//
+//
+//        assertThrows(AssertionError.class, () -> {
+//            User user = new User("", 4, boss, timesheet);
+//        }, "Creating a trafficcontroller without a name should fail");
+//
+//        assertThrows(AssertionError.class, () -> {
+//            User user = new User(null, 4, boss, timesheet);
+//        }, "Creating a trafficcontroller with a null name should fail");
+//
+//
+//        assertThrows(AssertionError.class, () -> {
+//            Timesheet timesheet2 = new Timesheet();
+//            User user = new User("TrafficController", User.TRAFFICCONTROLLER, boss, timesheet2);
+//        }, "Creating a trafficcontroller with a empty timesheet should fail");
+//
+//        assertThrows(AssertionError.class, () -> {
+//            User user = new User("TrafficController", User.TRAFFICCONTROLLER, boss, timesheet);
+//            user.setBHVLicense("A124587963");
+//        }, "first letter needs to B");
+//
+//
+//        assertThrows(AssertionError.class, () -> {
+//            User user = new User("TrafficController", User.TRAFFICCONTROLLER, boss, timesheet);
+//            user.setBHVLicense("B12458796663");
+//        }, "length longer then 10");
+
+        //2
+
         assertThrows(AssertionError.class, () -> {
-            User user = new User("a name", 12, boss, timesheet);
-        }, "Creating a user with an unknown role should fail");
-
-
-        assertThrows(AssertionError.class, () -> {
-            User user = new User("a name", 4, null, timesheet);
-        }, "Creating a trafficcontroller without a boss should fail");
-
+            TrafficController trafficController = new TrafficController(null, boss, timesheet);
+        }, "creating traffic controller without a name");
 
         assertThrows(AssertionError.class, () -> {
-            User user = new User("a name", 4, boss, null);
-        }, "Creating a trafficcontroller without timesheet should fail");
-
+            TrafficController trafficController = new TrafficController("coronacontroller", null, timesheet);
+        }, "creating traffic controller without a boss");
+        assertThrows(AssertionError.class, () -> {
+            TrafficController trafficController = new TrafficController("coronacontroller", boss, null);
+        }, "timesheet is null");
+        assertThrows(AssertionError.class, () -> {
+            TrafficController trafficController = new TrafficController("", boss, null);
+        }, "trafficonctoller with empty name");
 
         assertThrows(AssertionError.class, () -> {
-            User user = new User("", 4, boss, timesheet);
-        }, "Creating a trafficcontroller without a name should fail");
-
+            TrafficController user = new TrafficController("coronacontroller", boss, timesheet);
+            user.setBHVLicense("B12458796663");
+        });
         assertThrows(AssertionError.class, () -> {
-            User user = new User(null, 4, boss, timesheet);
-        }, "Creating a trafficcontroller with a null name should fail");
-
-
-        assertThrows(AssertionError.class, () -> {
-            Timesheet timesheet2 = new Timesheet();
-            User user = new User("TrafficController", User.TRAFFICCONTROLLER, boss, timesheet2);
-        }, "Creating a trafficcontroller with a empty timesheet should fail");
-
-        assertThrows(AssertionError.class, () -> {
-            User user = new User("TrafficController", User.TRAFFICCONTROLLER, boss, timesheet);
+            TrafficController user = new TrafficController("coronacontroller", boss, timesheet);
             user.setBHVLicense("A124587963");
         }, "first letter needs to B");
 
 
-        assertThrows(AssertionError.class, () -> {
-            User user = new User("TrafficController", User.TRAFFICCONTROLLER, boss, timesheet);
-            user.setBHVLicense("B12458796663");
-        }, "length longer then 10");
 
 
     }

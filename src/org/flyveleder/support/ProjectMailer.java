@@ -21,8 +21,8 @@ public class ProjectMailer {
 
     public void sendMail() {
 
-        final String username = ""; //fill in your own google emailaddress
-        final String password = ""; //fill in your own password
+        final String username = "nathangemieee@gmail.com"; //fill in your own google emailaddress
+        final String password = "nathanj1k"; //fill in your own password
 
         Properties prop = new Properties();
         prop.put("mail.smtp.host", "smtp.gmail.com");
@@ -45,7 +45,7 @@ public class ProjectMailer {
             message.setFrom(new InternetAddress("bart.flyveleder@gmail.com"));
             message.setRecipients(
                     Message.RecipientType.TO,
-                    InternetAddress.parse("add.your.own.emailadres@here.nl")
+                    InternetAddress.parse("nathangemieee@gmail.com")
             );
             message.setSubject("Flyveleder project informatiion");
             message.setText(mailTemplate);
