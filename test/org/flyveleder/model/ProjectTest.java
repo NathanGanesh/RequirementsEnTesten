@@ -12,10 +12,11 @@ import static org.junit.jupiter.api.Assertions.*;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class ProjectTest {
     private Timesheet timesheet;
-    private User boss;
+    private Manager boss;
     private Project project;
     private TimesheetItem timesheetItem;
     private Customer customer;
+    private TrafficController trafficController1;
 
     @BeforeEach
     public void startUp() throws FlyvelederModelException{
@@ -23,7 +24,10 @@ class ProjectTest {
         customer = new Customer("coronacustomer");
         timesheet = new Timesheet();
         project = new Project("coronaproject", customer, timesheet);
-        timesheetItem = new TimesheetItem(boss, project, LocalTime.of(11, 30), LocalTime.of(19, 30), LocalDate.now());
+        trafficController1 = new TrafficController("trafficcontroller",boss, timesheet);
+        timesheetItem = new TimesheetItem(trafficController1, project, LocalTime.of(11, 30), LocalTime.of(19, 30), LocalDate.now());
+
+
     }
 
     /**

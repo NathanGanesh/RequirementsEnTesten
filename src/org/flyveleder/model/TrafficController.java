@@ -26,7 +26,7 @@ public class TrafficController extends User {
 
         this.timeSheet = timesheet;
         assert timeSheet != null : "no time sheet";
-        assert !timeSheet.getItems().isEmpty() : "time sheet is empty for trafficController";
+//        assert !timeSheet.getItems().isEmpty() : "time sheet is empty for trafficController";
     }
 
 
@@ -86,6 +86,7 @@ public class TrafficController extends User {
         //sort work on the date
         items.sort((w1, w2) -> w1.getDate().isBefore(w2.getDate()) ? -1 : 1);
         items.forEach(item -> {
+            // TODO: 28-6-2020 write test case
             if (!projects.contains(item.getProject())) projects.add(item.getProject());
         });
         return projects;

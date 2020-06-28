@@ -2,6 +2,7 @@ package org.flyveleder.model;
 
 import org.flyveleder.exceptions.FlyvelederModelException;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -23,5 +24,16 @@ class TimesheetItemTest {
         project = new Project("Test", customer, timesheet);
         TrafficController user = new TrafficController("a name", boss, timesheet);
         timesheetItem = new TimesheetItem(trafficController, project, LocalTime.of(11, 30), LocalTime.of(19, 30), LocalDate.now());
-
     }
+
+    @Test
+    public void testTimeSheet() throws FlyvelederModelException {
+        assertNull(trafficController);
+        assertNull(timesheetItem);
+        timesheet.addItem(timesheetItem);
+        assertEquals(timesheet.getItems().size(),1);
+        assertEquals(timesheetItem.getTrafficController(), trafficController);
+    }
+
+
+}

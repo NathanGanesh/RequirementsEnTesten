@@ -25,14 +25,17 @@ public class TimesheetItem {
         Timesheet items are planned by planners
         When planning an item the date cannot be in the past!
      */
-    public TimesheetItem(User trafficController, Project project, LocalTime start, LocalTime end, LocalDate date) throws FlyvelederModelException {
+    public TimesheetItem(TrafficController trafficController, Project project, LocalTime start, LocalTime end, LocalDate date) throws FlyvelederModelException {
         if (date.isBefore(LocalDate.now())) {
             throw new FlyvelederModelException("You cannot plan items in the past");
         }
+        assert trafficController != null: new FlyvelederModelException("trafficcontroller is null");
         this.trafficController = trafficController;
+        assert !end.isBefore(start): new FlyvelederModelException("end is before start");
         this.start = start;
         this.end = end;
         this.date = date;
+        assert project!=null: new FlyvelederModelException("project is null");
         this.project = project;
         this.id = Integer.valueOf(++maxId).toString();
     }
@@ -41,7 +44,6 @@ public class TimesheetItem {
     public User getTrafficController() {
         return trafficController;
     }
-
 
     public void setTrafficController(User trafficController) {
         this.trafficController = trafficController;

@@ -22,6 +22,7 @@ class UserTest {
     private Manager boss;
     private Customer customer;
     private Planner planner;
+    private TrafficController trafficController1;
 
     @BeforeAll
     public void startUp() throws FlyvelederModelException {
@@ -30,12 +31,16 @@ class UserTest {
 //        planner = new User("planner", User.PLANNER, boss, null);
 
         boss = new Manager("bossman");
-        customer = new Customer("customer");
-        planner = new Planner("planner");
         timesheet = new Timesheet();
-        timesheetItem = new TimesheetItem(boss, project, LocalTime.of(11, 30), LocalTime.of(13, 30), LocalDate.now());
-        timesheet.addItem(timesheetItem);
+        customer = new Customer("customer");
         project = new Project("Test", customer, timesheet);
+        planner = new Planner("planner");
+
+        trafficController1 = new TrafficController("trafficcontroller",boss, timesheet);
+        timesheetItem = new TimesheetItem(trafficController1, project, LocalTime.of(11, 30), LocalTime.of(13, 30), LocalDate.now());
+        timesheet.addItem(timesheetItem);
+
+
 
     }
 
@@ -52,11 +57,11 @@ class UserTest {
         assertNotNull(user, "User should not be null");
         assertEquals(user.getName(), "a name");
         assertSame(user.getBoss().getName(), "bossman");
-        assertEquals(user.getId(), "4");
+        assertEquals(user.getId(), "5");
 //        assertEquals(user.getTypeOfUser(), User.TRAFFICCONTROLLER);
         assertEquals(user.getName(), "a name");
         assertSame(user.getBoss(), boss);
-        assertEquals(user.getId(), "4"); // second user created... id should be 2
+        assertEquals(user.getId(), "5"); // second user created... id should be 2
 
         /* Testing getters and setters to get 100% code coverage */
         assertTrue(customer instanceof Customer);
@@ -97,11 +102,10 @@ class UserTest {
         assertEquals(user.getVacationDates().size(), 0);
 
         assertNotNull(boss.getEmployees());
-        System.out.println(boss.getEmployees());
 
-        assertEquals(boss.getEmployees().size(), 1);
+        assertEquals(boss.getEmployees().size(), 2);
         boss.removeEmployeeToBoss(user);
-        assertEquals(boss.getEmployees().size(), 0);
+        assertEquals(boss.getEmployees().size(), 1);
 
 
         //test password management
@@ -109,7 +113,7 @@ class UserTest {
         user.changePassword("hello");
         assertTrue(user.login("hello"));
         assertFalse(user.login("helloworld"));
-        assertEquals(user.toString(), "userid 4, name a name");
+        assertEquals(user.toString(), "userid 5, name a name");
 
 //        assertEquals(user.getPassword(), "$2a$10$JiWDEI9Y0ZrNbcyPwHEUleIdOB5kuhyeK74hJ6krENIxdvk7x5Biy");
         assertNotEquals(user.getPassword(), "hello");
